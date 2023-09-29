@@ -1,0 +1,66 @@
+﻿@page "/counter"
+@using Microsoft.EntityFrameworkCore;
+@using ProyectoOlimpiadas.Data;
+@using ProyectoOlimpiadas.Data.Models;
+
+@inject IDbContextFactory<HospitalDbContext> DbFactory
+<PageTitle>Counter</PageTitle>
+@*<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+<button onclick="colocar_paciente_enfermero()">colocar_paciente_enfermero</button>
+<button onclick="colocarArea()">colocar_area</button>
+<button onclick="creararea()">crear area</button>
+
+<h1>nombre</h1>
+@areaVM.nombre;
+@for (int i = 0; i < 0; i++)
+{
+    <h1>Pacientes</h1>
+        @areaVM.Pacientes[i].nombre_completo;
+    <h1>Enfermeros</h1>
+        @areaVM.Enfermeros[i].nombre_completo;
+}
+
+@code 
+{
+    private int currentCount = 0;
+    
+    public Paciente paciente = new();
+    public Enfermero enfermero = new();
+
+    public AreaVM areaVM = new AreaVM();
+    public void colocar_paciente_enfermero()
+    {
+        paciente.nombre_completo = "nombre1";
+        enfermero.nombre_completo = "nombre1";
+    }
+    private async void colocarArea()
+    {
+        areaVM.nombre = "nombre1";
+        areaVM.Pacientes.Add(paciente);
+        areaVM.Enfermeros.Add(enfermero);
+    }
+    public class AreaVM
+    {
+        public string? nombre { get; set; }
+        public List<Paciente>? Pacientes { get; set; }
+        public List<Enfermero>? Enfermeros { get; set; }
+    }
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        using var db = DbFactory.CreateDbContext();
+    }
+    private async void creararea(Area nueva_area)
+    {
+        using var db = DbFactory.CreateDbContext();
+
+        await db.Areas.AddAsync(nueva_area);
+    }
+}
